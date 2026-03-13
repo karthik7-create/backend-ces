@@ -4,6 +4,8 @@ import com.example.backend_ces.entity.Course;
 import com.example.backend_ces.entity.Student;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,15 +13,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class NotificationService {
 
-    // NOTE: To enable real email sending, uncomment the JavaMailSender injection
-    // and the sendEmail method below, and configure spring.mail.* properties.
-    //
-    // private final JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
     /**
-     * Sends enrollment confirmation notification.
-     * Currently simulated via console logging.
-     * Replace with actual email sending in production.
+     * Sends enrollment confirmation email to the student.
      */
     public void sendEnrollmentConfirmation(Student student, Course course) {
         String subject = "Enrollment Confirmation - " + course.getCourseName();
@@ -41,31 +38,21 @@ public class NotificationService {
                 course.getCategory() != null ? course.getCategory() : "N/A"
         );
 
-        // Simulate email by logging
-        log.info("📧 ════════════════════════════════════════════");
-        log.info("📧 EMAIL NOTIFICATION");
-        log.info("📧 To:      {}", student.getEmail());
-        log.info("📧 Subject: {}", subject);
-        log.info("📧 Body:\n{}", body);
-        log.info("📧 ════════════════════════════════════════════");
-
-        // Uncomment below to send actual email:
-        // sendEmail(student.getEmail(), subject, body);
+        sendEmail(student.getEmail(), subject, body);
     }
 
-    /*
     private void sendEmail(String to, String subject, String body) {
         try {
+            log.info("📧 Attempting to send email to {}...", to);
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(to);
             message.setSubject(subject);
             message.setText(body);
-            message.setFrom("noreply@courseenrollment.com");
+            message.setFrom("karthikeyanr776@gmail.com");
             mailSender.send(message);
-            log.info("📧 Email sent to {}", to);
+            log.info("📧 ✅ Email sent successfully to {}", to);
         } catch (Exception e) {
-            log.error("❌ Failed to send email to {}: {}", to, e.getMessage());
+            log.error("❌ Failed to send email to {}: {}", to, e.getMessage(), e);
         }
     }
-    */
 }
